@@ -1,0 +1,10 @@
+site_name: 关于改进LLM的若干想法
+theme:
+  name: material
+
+nav:
+  - 首页: index.md
+  - 思维导图: javascripts/mindmap.html   # 让它出现在侧边栏
+
+extra_javascript:
+  - javascripts/mindmap.html             # 告诉 MkDocs 原样复制

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Interactive Mind Map Demo</title>
+  <style>
+    #cy {
+      width: 100%;
+      height: 600px;
+      border: 1px solid #e0e0e0;
+    }
+  </style>
+  <!-- Tippy tooltip styles -->
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+</head>
+<body>
+  <h2 style="text-align:center">Concept Map</h2>
+  <div id="cy"></div>
+
+  <!-- Core libraries -->
+  <script src="https://unpkg.com/cytoscape@3.25.0/dist/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/cytoscape-popper@1.0.4/cytoscape-popper.js"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+
+  <script>
+    // 1. Define your nodes and edges in a simple JSON array
+    const elements = [
+      { data: { id: 'root',  label: 'Root',     desc: 'High‑level overview of the map' } },
+      { data: { id: 'a',     label: 'Topic A', desc: 'Details, links, or markdown for topic A' } },
+      { data: { id: 'b',     label: 'Topic B', desc: 'Details, links, or markdown for topic B' } },
+      { data: { id: 'c',     label: 'Topic C', desc: 'Details, links, or markdown for topic C' } },
+      // edges
+      { data: { source: 'root', target: 'a' } },
+      { data: { source: 'root', target: 'b' } },
+      { data: { source: 'root', target: 'c' } }
+    ];
+
+    // 2. Create the Cytoscape instance
+    const cy = cytoscape({
+      container: document.getElementById('cy'),
+      elements,
+      layout: { name: 'cose', padding: 40 }, // force‑directed layout
+      style: [
+        {
+          selector: 'node',
+          style: {
+            'background-color': '#4f46e5',
+            'label': 'data(label)',
+            'color': '#fff',
+            'text-valign': 'center',
+            'text-halign': 'center',
+            'font-size': 11,
+            'width': 36,
+            'height': 36
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'width': 2,
+            'line-color': '#a1a1aa',
+            'curve-style': 'bezier'
+          }
+        }
+      ]
+    });
+
+    // 3. Attach Popper/Tippy tooltips to every node
+    cy.nodes().forEach(node => {
+      // Create a Popper reference for this node
+      const ref = node.popperRef();
+
+      // Build the tooltip
+      const tip = tippy(ref, {
+        content: `<strong>${node.data('label')}</strong><br>${node.data('desc')}`,
+        allowHTML: true,
+        interactive: true,
+        trigger: 'manual',
+        theme: 'light-border',
+      });
+
+      // Show/hide events
+      node.on('mouseover', () => tip.show());
+      node.on('mouseout',  () => tip.hide());
+    });
+  </script>
+</body>
+</html>
